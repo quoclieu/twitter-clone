@@ -27,6 +27,9 @@ const Button = styled.button`
   font-size: 20px;
   font-weight: bold;
   border: none;
+  &:hover {
+    cursor: pointer;
+  }
 `;
 
 const ADJECTIVE = [
@@ -50,6 +53,8 @@ const ANIMAL = [
   'Monkey'
 ];
 
+const COLOR = ['#4DD2FF', '#46E873', '#EDB05A', '#E8B446', '#FF8A6B'];
+
 const MessageInput = props => {
   const generateRandomName = () => {
     const name =
@@ -59,15 +64,21 @@ const MessageInput = props => {
     return name;
   };
 
+  const generateColor = () => {
+    return COLOR[Math.floor(Math.random() * COLOR.length)];
+  };
+
   const [user, setUser] = useState(generateRandomName());
   const [message, setMessage] = useState('');
-
+  console.log(generateColor());
   return (
     <Form
       {...props}
       onSubmit={e => {
         e.preventDefault();
-        props.onSubmit({ message, user });
+        setMessage('');
+        setUser(generateRandomName());
+        props.onSubmit({ message, user, color: generateColor() });
       }}
     >
       <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -86,7 +97,12 @@ const MessageInput = props => {
         onChange={e => setMessage(e.target.value)}
         placeholder="What's happening?"
       />
-      <Button type="submit" variant="contained" color="primary">
+      <Button
+        type="submit"
+        style={{ marginTop: 10 }}
+        variant="contained"
+        color="primary"
+      >
         Twoot
       </Button>
     </Form>

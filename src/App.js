@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import MessageInput from './components/MessageInput';
 import Newsfeed from './components/Newsfeed';
-import LoadingSpinner from './components/LoadingSpinner';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import twittericon from './images/twittericon.png';
 
 import { firebaseMessages } from './firebase.js';
 
@@ -15,6 +16,8 @@ const Heading = styled.h1`
   border-top: none;
   margin: 0;
   padding: 20px;
+  display: flex;
+  align-items: center;
 `;
 
 const App = () => {
@@ -32,14 +35,15 @@ const App = () => {
     refreshMessages();
   }, []);
 
-  const handleSubmit = ({ user, message }) => {
+  const handleSubmit = ({ user, message, color }) => {
     if (user && message) {
       firebaseMessages
         .push()
         .set({
           user,
           message,
-          date: new Date().toString()
+          date: new Date().toString(),
+          color
         })
         .then(() => refreshMessages());
     }
@@ -48,9 +52,24 @@ const App = () => {
   return (
     <div>
       <header>
-        <Heading>Home</Heading>
+        <Heading>
+          <img
+            src={twittericon}
+            style={{ borderRadius: '50%', height: 50, marginRight: 20 }}
+            alt="twitter icon"
+          />
+          Twotter - Twitter for animals
+        </Heading>
         <MessageInput onSubmit={handleSubmit} />
-        {isLoading ? <LoadingSpinner /> : <Newsfeed messages={messages} />}
+        {isLoading ? (
+          <div
+            style={{ display: 'flex', justifyContent: 'center', marginTop: 20 }}
+          >
+            <CircularProgress />
+          </div>
+        ) : (
+          <Newsfeed messages={messages} />
+        )}
       </header>
     </div>
   );

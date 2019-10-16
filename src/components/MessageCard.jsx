@@ -25,14 +25,35 @@ const DateText = styled.p`
   font-size: 14px;
 `;
 
-const MessageCard = ({ user, message, date }) => {
+const ProfileColor = styled.div`
+  height: 20px;
+  width: 20px;
+  margin-right: 10px;
+  border-radius: 50%;
+  padding: 5px;
+  background-color: ${props => props.color};
+`;
+
+const NameAndIconContainer = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+const MessageCard = ({ user, message, date, color }) => {
   return (
     <Card>
-      <UserName>@{user}</UserName>
+      <NameAndIconContainer>
+        <ProfileColor color={color} />
+        <UserName>@{user}</UserName>
+      </NameAndIconContainer>
       <MessageText>{message}</MessageText>
       <DateText>{date}</DateText>
     </Card>
   );
+};
+
+MessageCard.defaultProps = {
+  color: 'red'
 };
 
 export default MessageCard;

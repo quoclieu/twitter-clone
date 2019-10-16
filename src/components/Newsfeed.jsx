@@ -8,13 +8,20 @@ const Container = styled.div`
 `;
 
 const Newsfeed = props => {
+  console.log(props);
   console.log();
   return (
     <Container>
       {Object.keys(props.messages).map(key => {
-        const { date, message, user } = props.messages[key];
+        const { date, message, user, color } = props.messages[key];
         return (
-          <MessageCard key={date} message={message} user={user} date={date} />
+          <MessageCard
+            key={key}
+            message={message}
+            color={color}
+            user={user}
+            date={date}
+          />
         );
       })}
     </Container>
