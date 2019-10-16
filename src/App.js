@@ -1,26 +1,59 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, { useState, useEffect } from 'react';
+import styled from 'styled-components';
+import MessageInput from './components/MessageInput';
+import Newsfeed from './components/Newsfeed';
+import LoadingSpinner from './components/LoadingSpinner';
+
+import { firebaseMessages } from './firebase.js';
+
 import './App.css';
 
-function App() {
+const Heading = styled.h1`
+  font-size: 20px;
+  color: white;
+  border: 1px solid ${props => props.theme.borderColor};
+  border-top: none;
+  margin: 0;
+  padding: 20px;
+`;
+
+const App = () => {
+  const [messages, setMessages] = useState([]);
+  const [isLoading, setLoading] = useState(true);
+
+  const refreshMessages = () => {
+    firebaseMessages.on('value', snapshot => {
+      setLoading(false);
+      setMessages(snapshot.val());
+    });
+  };
+
+  useEffect(() => {
+    refreshMessages();
+  }, []);
+
+  const handleSubmit = ({ user, message }) => {
+    if (user && message) {
+      firebaseMessages
+        .push()
+        .set({
+          user,
+          message,
+          date: new Date().toString()
+        })
+        .then(() => refreshMessages());
+    }
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+    <div>
+      <header>
+        <Heading>Home</Heading>
+        <MessageInput onSubmit={handleSubmit} />
+        {isLoading ? <LoadingSpinner /> : <Newsfeed messages={messages} />}
       </header>
     </div>
   );
-}
+};
 
 export default App;
